@@ -1,9 +1,10 @@
-import userEvent from "@testing-library/user-event";
+// import userEvent from "@testing-library/user-event";
 import React, { useState, useRef } from "react";
 //adding components
 import Player from "./components/Player";
 import Song from "./components/Song";
 import Library from "./components/Library";
+import Nav from './components/Nav'
 //adding styles
 import "./styles/app.scss";
 //adding data from util file where songs excist
@@ -27,6 +28,7 @@ function App() {
   };
   return (
     <div className="App">
+    <Nav />
       <Song currentSong={currentSong} />
       <Player
         setSongInfo={setSongInfo}
@@ -36,7 +38,13 @@ function App() {
         isPlaying={isPlaying}
         currentSong={currentSong}
       />
-      <Library audioRef={audioRef} songs={songs} setCurrentSong={setCurrentSong} isPlaying={isPlaying}/>
+      <Library
+        audioRef={audioRef}
+        songs={songs}
+        setSongs={setSongs}
+        setCurrentSong={setCurrentSong}
+        isPlaying={isPlaying}
+      />
       <audio
         onTimeUpdate={timeUpdateHandler}
         onLoadedMetadata={timeUpdateHandler}
