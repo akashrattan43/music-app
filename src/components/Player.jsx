@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -6,7 +6,7 @@ import {
   faAngleRight,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { playAudio } from "../util";
 const Player = ({
   currentSong,
   isPlaying,
@@ -16,7 +16,26 @@ const Player = ({
   songInfo,
   songs,
   setCurrentSong,
+  setSongs,
 }) => {
+  //useEffect
+  useEffect(() => {
+    //add active state
+    const newSongs = songs.map((song) => {
+      if (song.id === currentSong.id) {
+        return {
+          ...song,
+          active: true,
+        };
+      } else {
+        return {
+          ...song,
+          active: false,
+        };
+      }
+    });
+    setSongs(newSongs);
+  }, [currentSong]);
   //event Handler
   const playSongHandler = () => {
     if (isPlaying) {
@@ -43,26 +62,33 @@ const Player = ({
       setCurrentSong(songs[(currentIndex + 1) % songs.length]);
     }
     if (direction === "skip-back") {
-      if((currentIndex -1) % songs.length === -1){
-        setCurrentSong(songs[songs.length-1])
+      if ((currentIndex - 1) % songs.length === -1) {
+        setCurrentSong(songs[songs.length - 1]);
+        playAudio(isPlaying, audioRef);
         return;
       }
       setCurrentSong(songs[(currentIndex - 1) % songs.length]);
     }
+    playAudio(isPlaying, audioRef);
   };
 
   return (
     <div className="player">
       <div className="time-control">
         <p>{getTime(songInfo.currentTime)}</p>
-        <input
-          onChange={dragHandler}
-          min={0}
-          max={songInfo.duration || 0}
-          value={songInfo.currentTime}
-          type="range"
-        />
-        <p>{getTime(songInfo.duration)}</p>
+        <div className="track">
+          <input
+            onChange={dragHandler}
+            min={0}
+            max={songInfo.duration || 0}
+            value={songInfo.currentTime}
+            type="range"
+          />
+          <div className="animate-track">
+            
+          </div>
+        </div>
+        <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
         <FontAwesomeIcon
